@@ -11,6 +11,8 @@ const PROPERTIES = [
 
 const Dashboard: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState('prop-001');
+  const [selectedMonth, setSelectedMonth] = useState(3); // Default to March
+  const [selectedYear, setSelectedYear] = useState(2024);
 
   return (
     <div className="p-4 lg:p-6 min-h-full">
@@ -19,34 +21,73 @@ const Dashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
           <div className="mb-6">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            <div className="">
               <div>
                 <h2 className="text-lg lg:text-xl font-medium text-gray-900 mb-2">Revenue Overview</h2>
                 <p className="text-sm lg:text-base text-gray-600">
                   Monthly performance insights for your properties
                 </p>
               </div>
-              
-              {/* Property Selector */}
-              <div className="flex flex-col sm:items-end">
-                <label className="text-xs font-medium text-gray-700 mb-1">Select Property</label>
-                <select
-                  value={selectedProperty}
-                  onChange={(e) => setSelectedProperty(e.target.value)}
-                  className="block w-full sm:w-auto min-w-[200px] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
-                >
-                  {PROPERTIES.map((property) => (
-                    <option key={property.id} value={property.id}>
-                      {property.name}
-                    </option>
-                  ))}
-                </select>
+
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-end w-full sm:w-auto">
+                <div className="flex-1 sm:flex-none">
+                  <label className="text-xs font-medium text-gray-700 mb-1 block">
+                    Year
+                  </label>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {[2023, 2024, 2025].map(y => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex-1 sm:flex-none">
+                  <label className="text-xs font-medium text-gray-700 mb-1 block">
+                    Month
+                  </label>
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                      <option key={m} value={m}>
+                        {new Date(2000, m - 1).toLocaleString('en-US', { month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex-1 sm:flex-none">
+                  <label className="text-xs font-medium text-gray-700 mb-1 block">
+                    Property
+                  </label>
+                  <select
+                    value={selectedProperty}
+                    onChange={(e) => setSelectedProperty(e.target.value)}
+                    className="block w-full sm:w-auto min-w-[200px] px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {PROPERTIES.map((property) => (
+                      <option key={property.id} value={property.id}>
+                        {property.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            <RevenueSummary propertyId={selectedProperty} />
+            <RevenueSummary 
+              propertyId={selectedProperty} 
+              month={selectedMonth} 
+              year={selectedYear} 
+            />
           </div>
         </div>
       </div>

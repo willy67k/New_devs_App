@@ -8,12 +8,18 @@ router = APIRouter()
 @router.get("/dashboard/summary")
 async def get_dashboard_summary(
     property_id: str,
+    month: int = None,
+    year: int = None,
     current_user: dict = Depends(get_current_user)
 ) -> Dict[str, Any]:
     
     tenant_id = getattr(current_user, "tenant_id", "default_tenant") or "default_tenant"
     
-    revenue_data = await get_revenue_summary(property_id, tenant_id)
+    if month and year:
+        from app.services.reservations import calculate_monthly_revenue
+        revenue_data = await calculate_monthly_revenue(property_id, tenant_id, month, year)
+    else:
+        revenue_data = await get_revenue_summary(property_id, tenant_id)
     
     total_revenue_float = float(revenue_data['total'])
     
